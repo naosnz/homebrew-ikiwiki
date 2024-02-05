@@ -79,6 +79,14 @@
 # Warning: prerequisite Mail::Sendmail 0 not found.
 # Warning: prerequisite Text::Markdown 0 not found.
 #
+# Other TODO:
+#
+# ikiwiki-mass-rebuild  uses config file /etc/ikiwiki/wikilist
+#                       (should be /usr/local/etc/ikiwiki/wikilist)
+#
+# auto.setup, auto-blog.setup examples are not installed (these are in
+#                        the source top level)
+#
 #---------------------------------------------------------------------------
 # See Debian and MacPorts packaging for potential optional dependencies.
 #---------------------------------------------------------------------------
