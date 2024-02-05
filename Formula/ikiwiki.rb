@@ -84,9 +84,6 @@
 # ikiwiki-mass-rebuild  uses config file /etc/ikiwiki/wikilist
 #                       (should be /usr/local/etc/ikiwiki/wikilist)
 #
-# auto.setup, auto-blog.setup examples are not installed (these are in
-#                        the source top level)
-#
 #---------------------------------------------------------------------------
 # See Debian and MacPorts packaging for potential optional dependencies.
 #---------------------------------------------------------------------------
@@ -162,11 +159,19 @@ class Ikiwiki < Formula
     # We need to ensure the xgettext / msgfmt binaries are on the PATH
     ENV.prepend_path "PATH", Formula["gettext"].bin
 
+    system "mkdir", "#{libexec}/bin"
     system "perl", "Makefile.PL", "PREFIX=#{prefix}",
+                   "INSTALLBINDIR=#{libexec}/bin",
                    "INSTALLSITEMAN1DIR=#{man1}", "INSTALLSITEMAN3DIR=#{man3}"
     system "make"
     system "make", "install"
-    #bin.env_script_all_files libexec/"bin", PERL5LIB: "#{lib}/perl5:#{libexec}/lib/perl5"
+    bin.env_script_all_files libexec/"bin", PERL5LIB: "#{lib}/perl5:#{libexec}/lib/perl5"
+
+    # Install example configuration files into etc subdirectory
+    system "mkdir", "-p", "#{etc}/ikiwiki"
+    etc.install "auto.setup"      => "ikiwiki/auto.setup"
+    etc.install "auto-blog.setup" => "ikiwiki/auto-blog.setup"
+    etc.install "wikilist"        => "ikiwiki/wikilist"
   end
 
   test do
