@@ -20,7 +20,15 @@ Or as two separate steps:
 ## Documentation
 
 The [ikiwiki setup guide](https://ikiwiki.info/setup/) is
-a good place to start for learning how to use ikiwiki.
+a good place to start for learning how to use ikiwiki.  Note that
+the `auto.setup`, `auto-blog.setup`, and `wikilist` file are installed
+into the Homebrew `etc` directory (eg, `/usr/local/etc/ikiwiki/auto.setup`)
+so the example automated setup would be something like:
+
+`ikiwiki --setup /usr/local/etc/ikiwiki/auto.setup`
+
+Alternatively [set up the Wiki by hand](https://ikiwiki.info/setup/byhand/)
+which gives much more control over which steps are done.
 
 ## Caveats
 
