@@ -1,9 +1,10 @@
-# Homebrew packaging for ikiwki
+# Homebrew packaging for ikiwiki
 
 [ikiwiki](https://ikiwiki.info/) is a Markdown wiki compiler,
 written in Perl.  It has a core plus many extension modules.
 
 It was originally developed by [Joey Hess](http://kitenet.net/~joey/).
+
 
 ## Installation from Homebrew
 
@@ -17,6 +18,7 @@ Or as two separate steps:
 `brew tap naosnz/ikiwiki`
 `brew install ikiwiki`.
 
+
 ## Documentation
 
 The [ikiwiki setup guide](https://ikiwiki.info/setup/) is
@@ -29,6 +31,15 @@ so the example automated setup would be something like:
 
 Alternatively [set up the Wiki by hand](https://ikiwiki.info/setup/byhand/)
 which gives much more control over which steps are done.
+
+
+## Licensing
+
+ikiwiki is available under a [GPLv2+
+license](https://ikiwiki.info/freesoftware/).  This Homebrew Formula
+to facilitate installing it is available under a MIT License; see
+the LICENSE file for the text of the MIT License.
+
 
 ## Caveats
 
