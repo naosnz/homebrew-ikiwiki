@@ -30,7 +30,15 @@ so the example automated setup would be something like:
 `ikiwiki --setup /usr/local/etc/ikiwiki/auto.setup`
 
 Alternatively [set up the Wiki by hand](https://ikiwiki.info/setup/byhand/)
-which gives much more control over which steps are done.
+which gives much more control over which steps are done.  Note that
+if you are testing in, eg, `/tmp` on macOS, this a symlink, so you
+will need something ikke:
+
+`ikiwiki --verbose "${SRCDIR}" "${DESTDIR}" --url="http://localhost:8000/" --set "allow_symlinks_before_srcdir=1"`
+
+to set the option that permits symlinks in th source path.  (The
+`allow_symlinks_before_srcdir` was added a security feature for
+web editable wikis, in about 2008.)
 
 
 ## Licensing
