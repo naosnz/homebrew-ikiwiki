@@ -84,10 +84,35 @@ class Ikiwiki < Formula
     sha256 "ae285578f8565f9154c63e4234704b57b6835f77a2f82ffe724899d453262bb1"
   end
 
+  resource "HTML::Template" do
+    url    "https://cpan.metacpan.org/authors/id/S/SA/SAMTREGAR/HTML-Template-2.97.tar.gz"
+    sha256 "6547af61f3aa85793f8616190938d677d7995fb3b720c16258040bc935e2129f"
+  end
+
+  resource "Text::Markdown::Discount" do
+    url    "https://cpan.metacpan.org/authors/id/S/SE/SEKIMURA/Text-Markdown-Discount-0.16.tar.gz"
+    sha256 "adcbc9d3f986d1344648cba6476634eb8621c773941f7f3d10860f96d8089233"
+  end
+
   def install
     ENV.prepend_create_path "PERL5LIB", libexec/"lib/perl5"
 
     resource("HTML::Scrubber").stage do
+      ohai "Installing resource HTML::Scrubber"
+      system "perl", "Makefile.PL", "INSTALL_BASE=#{libexec}"
+      system "make"
+      system "make", "install"
+    end
+
+    resource("HTML::Template").stage do
+      ohai "Installing resource HTML::Template"
+      system "perl", "Makefile.PL", "INSTALL_BASE=#{libexec}"
+      system "make"
+      system "make", "install"
+    end
+
+    resource("Text::Markdown::Discount").stage do
+      ohai "Installing resource Text::Markdown::Discount"
       system "perl", "Makefile.PL", "INSTALL_BASE=#{libexec}"
       system "make"
       system "make", "install"
