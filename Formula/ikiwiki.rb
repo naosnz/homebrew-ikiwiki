@@ -1,5 +1,8 @@
 # ikiwiki HomeBrew formula
 #
+# Written by Ewen McNeill <ewen@naos.co.nz>, 2024-02-05
+# Updated by Ewen McNeill <ewen@naos.co.nz>, 2024-02-05
+#
 # Inspired by the rejected homebrew ikiwiki formula (~2011):
 #
 # https://github.com/Homebrew/legacy-homebrew/pull/5355/files
@@ -19,13 +22,14 @@
 #
 # for manual build instructions which covers more of the optional dependencies.
 #
-# Packaged from the Debian repository package as that seems like the
+# Packages from the Debian repository package as that seems like the
 # commonly agreed archive download site (ie, non-git repo), including
 # recommended at https://ikiwiki.info/download/
 #
-# Only the Perl modules identified as Debian as required dependencies are
+# Only the Perl modules identified as Debian as required dependencies, and
+# those that ikiwiki's installer insists must be present are currently
 # currently installed, to get the base Ikiwiki running.  There are *many*
-# optional dependencies, mostly for optional extension features of ikiwki
+# optional dependencies, mostly for optional extension features of ikiwki.
 #
 # For simplicity of the install, the "shipped with macOS" version of
 # Perl is used, and the Perl modules shipped with macOS are assumed to
@@ -66,6 +70,16 @@
 # -- macOS has YAML::PP (https://metacpan.org/pod/YAML::PP), but different API
 # -- CPAN: https://metacpan.org/pod/YAML::XS
 # 
+#---------------------------------------------------------------------------
+#
+# ikiwiki warnings about dependencies:
+#
+# Warning: prerequisite CGI::FormBuilder v3.2.2 not found.
+# Warning: prerequisite CGI::Session 0 not found.
+# Warning: prerequisite Mail::Sendmail 0 not found.
+# Warning: prerequisite Text::Markdown 0 not found.
+#
+#---------------------------------------------------------------------------
 # See Debian and MacPorts packaging for potential optional dependencies.
 #---------------------------------------------------------------------------
 # 
@@ -77,7 +91,8 @@ class Ikiwiki < Formula
   license "GPL-2+"
 
   uses_from_macos "perl"
-  depends_on "discount"
+  depends_on "discount"     # Markdown Parser
+  depends_on "gettext"      # Translations
 
   resource "HTML::Scrubber" do
     url    "https://cpan.metacpan.org/authors/id/N/NI/NIGELM/HTML-Scrubber-0.19.tar.gz"
@@ -92,6 +107,11 @@ class Ikiwiki < Formula
   resource "Text::Markdown::Discount" do
     url    "https://cpan.metacpan.org/authors/id/S/SE/SEKIMURA/Text-Markdown-Discount-0.16.tar.gz"
     sha256 "adcbc9d3f986d1344648cba6476634eb8621c773941f7f3d10860f96d8089233"
+  end
+
+  resource "YAML::XS" do
+    url    "https://cpan.metacpan.org/authors/id/T/TI/TINITA/YAML-LibYAML-0.89.tar.gz"
+    sha256 "155ab83675345c50add03311acf9dd915955707f909a2abd8b17d7792859b2ec"
   end
 
   def install
@@ -118,10 +138,26 @@ class Ikiwiki < Formula
       system "make", "install"
     end
 
-    #system "perl", "Makefile.PL", "INSTALL_BASE=#{prefix}",
-    #               "INSTALLSITEMAN1DIR=#{man1}", "INSTALLSITEMAN3DIR=#{man3}"
-    #system "make"
-    #system "make", "install"
+    resource("YAML::XS").stage do
+      ohai "Installing resource YAML::XS"
+      system "perl", "Makefile.PL", "INSTALL_BASE=#{libexec}"
+      system "make"
+      system "make", "install"
+    end
+
+    # Build ikiwiki with the Debian specific overrides
+    ohai "Installing main ikiwiki application (with Discount Markdown parser)"
+    ENV["IKIWIKI_TEST_ASSUME_MODERN_DISCOUNT"] = "1"
+    ENV["LC_ALL"]                              = "C"         # Debian: C.UTF-8
+    ENV["TZ"]                                  = "UTC"
+
+    # We need to ensure the xgettext / msgfmt binaries are on the PATH
+    ENV.prepend_path "PATH", Formula["gettext"].bin
+
+    system "perl", "Makefile.PL", "PREFIX=#{prefix}",
+                   "INSTALLSITEMAN1DIR=#{man1}", "INSTALLSITEMAN3DIR=#{man3}"
+    system "make"
+    system "make", "install"
     #bin.env_script_all_files libexec/"bin", PERL5LIB: "#{lib}/perl5:#{libexec}/lib/perl5"
   end
 
@@ -136,7 +172,8 @@ class Ikiwiki < Formula
     # The installed folder is not in the path, so use the entire path to any
     # executables being tested: `system "#{bin}/program", "do", "something"`.
     #
-    # TODO: testing
-    system "true"
+    # Trivial check that ikiwiki can at least be parsed
+    ENV.prepend_create_path "PERL5LIB", libexec/"lib/perl5"
+    system "perl", "-c", "#{bin}/ikiwiki"
   end
 end
