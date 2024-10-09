@@ -58,7 +58,7 @@
 # Markdown (libmarkdown2 -- https://packages.debian.org/sid/libmarkdown2)
 # -- C library, "Discount is an implementation of John Gruber's Markdown
 #    markup language"
-# -- Provided by Homebrew "discount" package
+# -- Vendored by Text::Markdown::Discount
 #
 # Text::Markdown::Discount (libtext-markdown-discount-perl)
 # -- CPAN: https://metacpan.org/pod/Text::Markdown::Discount
@@ -96,7 +96,6 @@ class Ikiwiki < Formula
   license "GPL-2+"
 
   uses_from_macos "perl"
-  depends_on "discount"     # Markdown Parser
   depends_on "gettext"      # Translations
 
   resource "HTML::Scrubber" do
