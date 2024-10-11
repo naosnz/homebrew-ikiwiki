@@ -138,8 +138,13 @@ class Ikiwiki < Formula
     resource("Text::Markdown::Discount").stage do
       ohai "Installing resource Text::Markdown::Discount"
       ENV.append_to_cflags "-Wno-incompatible-function-pointer-types" if DevelopmentTools.clang_build_version >= 1500
+
+      # Text::Markddown::Discount Makefile for vendored discount-2.2.7
+      # is not parallel safe, so run make in single threaded job
       system "perl", "Makefile.PL", "INSTALL_BASE=#{libexec}"
-      system "make"
+      ENV.deparallelize do
+        system "make"
+      end
       system "make", "install"
     end
 
