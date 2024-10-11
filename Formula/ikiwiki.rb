@@ -137,6 +137,7 @@ class Ikiwiki < Formula
 
     resource("Text::Markdown::Discount").stage do
       ohai "Installing resource Text::Markdown::Discount"
+      ENV.append_to_cflags "-Wno-incompatible-function-pointer-types" if DevelopmentTools.clang_build_version >= 1500
       system "perl", "Makefile.PL", "INSTALL_BASE=#{libexec}"
       system "make"
       system "make", "install"
