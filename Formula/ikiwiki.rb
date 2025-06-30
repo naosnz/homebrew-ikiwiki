@@ -109,8 +109,8 @@ class Ikiwiki < Formula
   end
 
   resource "Text::Markdown::Discount" do
-    url    "https://cpan.metacpan.org/authors/id/S/SE/SEKIMURA/Text-Markdown-Discount-0.16.tar.gz"
-    sha256 "adcbc9d3f986d1344648cba6476634eb8621c773941f7f3d10860f96d8089233"
+    url    "https://cpan.metacpan.org/authors/id/S/SO/SONGMU/Text-Markdown-Discount-0.17.tar.gz"
+    sha256 "86c518f530e9b957d6631dec77fe2970dc9003a0a68913f86996157e3636fb53"
   end
 
   resource "YAML::XS" do
@@ -137,7 +137,6 @@ class Ikiwiki < Formula
 
     resource("Text::Markdown::Discount").stage do
       ohai "Installing resource Text::Markdown::Discount"
-      ENV.append_to_cflags "-Wno-incompatible-function-pointer-types" if DevelopmentTools.clang_build_version >= 1500
 
       # Text::Markddown::Discount Makefile for vendored discount-2.2.7
       # is not parallel safe, so run make in single threaded job
