@@ -1,7 +1,7 @@
 # ikiwiki HomeBrew formula
 #
 # Written by Ewen McNeill <ewen@naos.co.nz>, 2024-02-05
-# Updated by Ewen McNeill <ewen@naos.co.nz>, 2024-02-05
+# Updated by Ewen McNeill <ewen@naos.co.nz>, 2025-06-30
 #
 # Inspired by the rejected homebrew ikiwiki formula (~2011):
 #
@@ -95,6 +95,8 @@ class Ikiwiki < Formula
   sha256 "594f13bcee8959356376a42eed6c5a8e295d325724b1c09f9395404e3262796a"
   license "GPL-2+"
 
+  revision 1
+
   uses_from_macos "perl"
   depends_on "gettext"      # Translations
 
@@ -109,8 +111,8 @@ class Ikiwiki < Formula
   end
 
   resource "Text::Markdown::Discount" do
-    url    "https://cpan.metacpan.org/authors/id/S/SO/SONGMU/Text-Markdown-Discount-0.17.tar.gz"
-    sha256 "86c518f530e9b957d6631dec77fe2970dc9003a0a68913f86996157e3636fb53"
+    url    "https://cpan.metacpan.org/authors/id/S/SO/SONGMU/Text-Markdown-Discount-0.18.tar.gz"
+    sha256 "c60a611c6554609d765c6a665d4089b0e2636780d614779ba6c9da64d6bdd827"
   end
 
   resource "YAML::XS" do
@@ -139,12 +141,17 @@ class Ikiwiki < Formula
       ohai "Installing resource Text::Markdown::Discount"
 
       # Text::Markddown::Discount Makefile for vendored discount-2.2.7
-      # is not parallel safe, so run make in single threaded job
-      system "perl", "Makefile.PL", "INSTALL_BASE=#{libexec}"
+      # is not parallel safe, so run buid in single threaded job
+      #
+      # Text:;Markdown::Discount 0.18 also switched from
+      # MakeMaker (Makefile.PL) to Minilla
+      # (which uses Build.PL from ModuleBuild)
+      #
+      system "perl", "Build.PL"
       ENV.deparallelize do
-        system "make"
+        system "./Build"
       end
-      system "make", "install"
+      system "./Build", "install", "--install_base=#{libexec}"
     end
 
     resource("YAML::XS").stage do
